@@ -13,17 +13,28 @@ import { CartContext } from "./contexts/CartContext";
 
 function App() {
   const [products] = useState(data);
+
+  let localCart = localStorage.getItem("cart");
+  localCart = localCart ? JSON.parse(localCart) : null;
+
   const [cart, setCart] = useState([]);
 
   const addItem = (item) => {
     let newCart = [...cart, item];
     setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
+
+  const deleteItem = (id) => {
+    const keepItem = cart.filter((item) => item.id !== id);
+    setCart(keepItem);
+    localStorage.setItem("cart", JSON.stringify(keepItem));
   };
 
   return (
     <div className="App">
-      <ProductContext.Provider value={{ products, addItem }}>
-        <CartContext.Provider value={cart}>
+      <ProductContext.Provider value={{ products, addItem, deleteItem }}>
+        <CartContext.Provider value={{ cart }}>
           <Navigation cart={cart} />
 
           {/* Routes */}
